@@ -1,0 +1,30 @@
+.admin_nav_panel {
+  div {
+    width: 100%;
+    background-color: rgb(106, 111, 116);
+    ul {
+      display: flex;
+      justify-content: space-evenly;
+      align-items: center;
+      padding: 20px;
+      li {
+        a {
+          padding: 10px;
+          text-decoration: none;
+          color: #2d2d2d;
+          font-family: Montserrat;
+          font-size: 16px;
+          font-style: normal;
+          font-weight: 400;
+          line-height: normal;
+          transition: transform 2s, color 2s;
+          display: block;
+          &:hover {
+            transform: scale(1.2);
+            color: coral;
+          }
+        }
+      }
+    }
+  }
+}
