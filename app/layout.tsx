@@ -1,5 +1,6 @@
 import type { Metadata } from 'next'
 import './globals.css'
+import 'scss/HardReset.css'
 
 export const metadata: Metadata = {
   title: 'Ballons',

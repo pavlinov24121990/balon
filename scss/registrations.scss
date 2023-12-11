@@ -1,0 +1,55 @@
+.registrations {
+  .nav-panel {
+    position: relative;
+    margin-bottom: 60px;
+  }
+  .registrations-form {
+    h2 {
+      margin-bottom: 40px;
+      color: #2d2d2d;
+      font-family: Montserrat;
+      font-size: 25px;
+      font-style: normal;
+      font-weight: 400;
+      line-height: 113.9%;
+      letter-spacing: 0.75px;
+    }
+    form {
+      width: 50%;
+      div {
+        margin-bottom: 40px;
+        input {
+          color: #c4c4c4;
+          font-family: Montserrat;
+          font-size: 14px;
+          font-style: normal;
+          font-weight: 400;
+          line-height: 113.9%;
+          border: none;
+          border-bottom: 1px solid #dadada;
+          border-color: #dadada;
+          border-radius: 0px;
+        }
+        a {
+          color: #2d2d2d;
+          font-family: Montserrat;
+          font-size: 14px;
+          font-style: normal;
+          font-weight: 400;
+          line-height: 107.613%;
+        }
+      }
+      .button {
+        background: #2d2d2d;
+        color: #fff;
+        font-family: Montserrat;
+        font-size: 16px;
+        font-style: normal;
+        font-weight: 400;
+        line-height: 113.9%;
+        letter-spacing: 0.48px;
+        padding: 10px;
+      }
+    }
+  }
+}

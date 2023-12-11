@@ -1,6 +1,8 @@
+'use client'
 import React, { useState, ChangeEvent, FormEvent, useEffect } from 'react';
 import 'bootstrap/dist/css/bootstrap.min.css';
-import { useRouter } from '@/node_modules/next/navigation'
+import { useRouter } from '@/node_modules/next/navigation';
+import { fetchCompany } from "helpers/api/fetchCompany";
 
 interface FormData {
   title: string;
@@ -24,15 +26,21 @@ interface Company {
   name: string;
 }
 
-const Form: React.FC<{ company: Company }> = ({ company }) => {
-  const [formData, setFormData] = useState<FormData>(company);
+const defaultCompany: Company = {title: "", description: "", name: "", phone: "", image_urls: [""], address: "", email: "", logo: ""}
+
+const Form: React.FC = () => {
+  const [company, setCompany] = useState<Company>(defaultCompany);
   const router = useRouter();
+  const [formData, setFormData] = useState<FormData>(company);
 
   useEffect(() => {
-    setFormData(company)
-    },
-    [company]);
+    fetchCompany().then((data: Company) => {
+      setFormData(data);
+    });
+  }, []);
 
+ 
+  
   const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
     setFormData((prevData) => ({
@@ -108,7 +116,7 @@ const Form: React.FC<{ company: Company }> = ({ company }) => {
         formDataToSend.append('company[images][]', image);
       });
 
-      const response = await fetch(`http://localhost:3000/api/v1/admin/companies/${company.id}`, {
+      const response = await fetch(`http://localhost:3000/api/v1/admin/companies/${formData.id}`, {
         method: 'PATCH',
         headers: {
           'Authorization': token,
@@ -157,7 +165,7 @@ const Form: React.FC<{ company: Company }> = ({ company }) => {
             </div>
           ))
           :
-          company.image_urls.map((image, index) => (
+          formData.image_urls.map((image, index) => (
             <div key={index} className="mb-3 me-3" id={index}>
               <img src={`http://localhost:3000${image}`} alt={`Image ${index}`} style={{ maxWidth: '100px', maxHeight: '100px' }} />
             </div>
@@ -183,10 +191,10 @@ const Form: React.FC<{ company: Company }> = ({ company }) => {
           </div>
           : 
           <div className="mb-3">
-            <img src={`http://localhost:3000${company.logo_url}`} alt={'logo'} style={{ maxWidth: '100px', maxHeight: '100px' }} />
+            <img src={`http://localhost:3000${formData.logo_url}`} alt={'logo'} style={{ maxWidth: '100px', maxHeight: '100px' }} />
           </div>
         }
-      <button type="submit" className="btn btn-primary w-100 mb-3">Submit</button>
+      <button type="submit" className="btn btn-primary w-100 mb-3">Update company</button>
     </form>
   );
 };
