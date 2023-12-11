@@ -41,7 +41,7 @@ const HeaderNavigation: React.FC = () => {
           <Link href=""><Image src={Cart} alt="Cart Icon" width={30} height={30}/></Link>
         </li>
         <li>
-          <Link href=""><Image src={User} alt="User Icon" width={30} height={30}/></Link>
+          <Link href="/registrations"><Image src={User} alt="User Icon" width={30} height={30}/></Link>
         </li>
         <li>
           <Link href="/admin"><Image src={Admin} alt="User Icon" width={30} height={30}/></Link>

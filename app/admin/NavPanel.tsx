@@ -3,10 +3,10 @@ import Link from "@/node_modules/next/link";
 
 const NavPanel: React.FC = () => {
   return (
-    <div>
+    <div className="admin_panel mb-3">
       <ul>
         <li>
-          <Link href="">Products</Link>
+          <Link href="/admin/products">Products</Link>
         </li>
         <li>
           <Link href="/admin/company">Company</Link>

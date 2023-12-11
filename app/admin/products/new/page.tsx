@@ -1,11 +1,12 @@
 'use server'
-import AdminLayout from "./AdminLayout";
+import AdminLayout from '@/app/admin/AdminLayout';
+import Form from './Form'
+
 
 const Home: React.FC = () => {
   return (
     <AdminLayout>
-      <main>
-      </main>
+      <Form />
     </AdminLayout>
   );
 }
