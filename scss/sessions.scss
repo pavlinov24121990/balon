@@ -1,11 +1,11 @@
 @import url("https://cdn.jsdelivr.net/npm/bootstrap-icons@1.8.1/font/bootstrap-icons.css");
 
-.registrations {
+.sessions {
   .nav-panel {
     position: relative;
     margin-bottom: 60px;
   }
-  .registrations-form {
+  .sessions-form {
     h2 {
       margin-bottom: 40px;
       color: #2d2d2d;
@@ -15,6 +15,20 @@
       font-weight: 400;
       line-height: 113.9%;
       letter-spacing: 0.75px;
+    }
+    a {
+      color: #2d2d2d;
+      font-family: Montserrat;
+      font-size: 14px;
+      font-style: normal;
+      font-weight: 400;
+      line-height: 107.613%;
+      transition: transform 2s, color 2s;
+      display: block;
+      &:hover {
+        transform: scale(1.2);
+        color: #615f5f;
+      }
     }
     form {
       width: 50%;
@@ -33,14 +47,7 @@
           border-color: #dadada;
           border-radius: 0px;
         }
-        a {
-          color: #2d2d2d;
-          font-family: Montserrat;
-          font-size: 14px;
-          font-style: normal;
-          font-weight: 400;
-          line-height: 107.613%;
-        }
+
         i {
           position: absolute;
           display: block;

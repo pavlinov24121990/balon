@@ -4,32 +4,14 @@ import Link from "@/node_modules/next/link";
 import Price from 'helpers/FormattingPrice';
 import DeleteProducts from './deleteProduct';
 import Caourusel from './caourusel'
-import { revalidateTag } from '@/node_modules/next/cache';
+import { fetchCookie, ShowProduct } from '../api/route';
 
-async function ShowProduct(id: number) {
+
+const ProductDetailPage = async ({ params }) => {
   try {
-    const token = 'Bearer eyJhbGciOiJIUzI1NiJ9.eyJ1c2VyX2lkIjoyfQ.B8Mj72lfdlp3hLsKSPwXM6sJtYFEWgDlHSmKJXccHpo';
-    const response = await fetch(`http://127.0.0.1:3000/api/v1/admin/products/${id}`, {
-      method: 'GET',
-      headers: {
-        'Authorization': token,
-        'Content-Type': 'application/json',
-      },
-      next: { tags: ['products'], revalidate: 1  },
-    });
-    const data = await response.json();
-    revalidateTag('products')
-    return data;
-  } catch (error) {
-    console.error('Error fetching product data:', error);
-  }
-};
-
-
-const ProductDetailPage: React.FC<{ params: { id: number } }> = async ({ params }) => {
-  try {
-    
-    const product = await ShowProduct(params.id);
+    const response = await fetchCookie();
+    const cookies: string | null = response.headers.get('set-cookie');
+    const product = await ShowProduct(params.id, cookies);
 
     return (
       <AdminLayout>
@@ -44,7 +26,7 @@ const ProductDetailPage: React.FC<{ params: { id: number } }> = async ({ params 
             <Link href={`/admin/products/edit/${params.id}`} className="btn btn-primary me-3 mb-3" >
               Product update
             </Link>
-            <DeleteProducts productId={params.id} />
+              <DeleteProducts productId={params.id} cookies={cookies}/>
           </div>
         </div>
       </main>

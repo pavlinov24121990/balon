@@ -3,45 +3,23 @@ import React, { useState, ChangeEvent, FormEvent, useEffect } from 'react';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { useRouter } from '@/node_modules/next/navigation';
 import { fetchCompany } from "helpers/api/fetchCompany";
+import { CompanyAdmin } from '@/helpers/interface/interfaces';
 
-interface FormData {
-  title: string;
-  description: string;
-  phone: string;
-  images: File[];
-  address: string;
-  email: string;
-  logo: File | null;
-  name: string;
-}
-
-interface Company {
-  title: string;
-  description: string;
-  phone: string;
-  image_urls: File[];
-  address: string;
-  email: string;
-  logo_url: File | null;
-  name: string;
-}
-
-const defaultCompany: Company = {title: "", description: "", name: "", phone: "", image_urls: [""], address: "", email: "", logo: ""}
+const defaultCompany: CompanyAdmin = { title: "", description: "", name: "", phone: "", image_urls: [""], address: "", email: "", logo: null, formatted_phone: '', logo_url: '', id: null, images: [] }
 
 const Form: React.FC = () => {
-  const [company, setCompany] = useState<Company>(defaultCompany);
   const router = useRouter();
-  const [formData, setFormData] = useState<FormData>(company);
+  const [formData, setFormData] = useState<CompanyAdmin>(defaultCompany);
 
   useEffect(() => {
-    fetchCompany().then((data: Company) => {
+    fetchCompany().then((data: CompanyAdmin) => {
       setFormData(data);
     });
   }, []);
 
  
   
-  const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
+  const handleChange = (e: ChangeEvent<HTMLInputElement>): void => {
     const { name, value } = e.target;
     setFormData((prevData) => ({
       ...prevData,
@@ -49,15 +27,19 @@ const Form: React.FC = () => {
     }));
   };
 
-  const handleFilesChange = (e: ChangeEvent<HTMLInputElement>) => {
+  const handleFilesChange = (e: ChangeEvent<HTMLInputElement>): void => {
     const { name, files } = e.target;
-    setFormData((prevData) => ({
-      ...prevData,
-      [name]: Array.from(files),
-    }));
+    if (files) {
+      setFormData((prevData) => ({
+        ...prevData,
+        [name]: Array.from(files),
+      }));
+    } else {
+      console.error('No files selected.');
+    }
   };
 
-  const handleDeleteImage = (index: number, e: React.MouseEvent<HTMLButtonElement>) => {
+  const handleDeleteImage = (index: number, e: React.MouseEvent<HTMLButtonElement>): void => {
     setFormData((prevData) => {
       const newImages = [...prevData.images];
       newImages.splice(index, 1);
@@ -77,20 +59,20 @@ const Form: React.FC = () => {
     }
   };
 
-  const handleDeleteLogo = () => {
-  setFormData((prevData) => ({
-    ...prevData,
-    logo: null,
-  }));
+  const handleDeleteLogo = (): void => {
+    setFormData((prevData) => ({
+      ...prevData,
+      logo: null,
+    }));
 
-  const fileInput: HTMLInputElement | null = document.getElementById('CompanyLogo') as HTMLInputElement;
-  if (fileInput) {
-    fileInput.value = '';
-  }
-};
+    const fileInput: HTMLInputElement | null = document.getElementById('CompanyLogo') as HTMLInputElement;
+    if (fileInput) {
+      fileInput.value = '';
+    }
+  };
 
   
-  const handleFileChange = (e: ChangeEvent<HTMLInputElement>) => {
+  const handleFileChange = (e: ChangeEvent<HTMLInputElement>): void => {
     const { name, files } = e.target;
     setFormData((prevData) => ({
       ...prevData,

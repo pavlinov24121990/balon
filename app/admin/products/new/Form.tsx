@@ -2,21 +2,32 @@
 import 'scss/HardReset.css';
 import { FormEvent, useState, ChangeEvent } from 'react';
 import { useRouter } from '@/node_modules/next/navigation';
+import { ProductPropsAndCockies } from '@/helpers/interface/interfaces';
 
-const Form: React.FC = ({product}) => {
+const Form: React.FC<ProductPropsAndCockies> = ({ product, cookies }) => {
   const router = useRouter();
-  const [selectedImages, setSelectedImages] = useState<File[]>([]);
+  const [selectedImages, setSelectedImages] = useState<File[] | null>(null);
 
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-
+    if (!cookies) {
+      return null
+    }
     try {
-      const token = 'Bearer eyJhbGciOiJIUzI1NiJ9.eyJ1c2VyX2lkIjoyfQ.B8Mj72lfdlp3hLsKSPwXM6sJtYFEWgDlHSmKJXccHpo';
       const formDataToSend = new FormData();
       const files = (e.currentTarget.querySelector('input[name="images"]') as HTMLInputElement).files;
-      formDataToSend.append('product[title]', e.currentTarget.title.value);
-      formDataToSend.append('product[description]', e.currentTarget.description.value);
-      formDataToSend.append('product[price]', e.currentTarget.price.value);
+      const titleInput = e.currentTarget.querySelector('input[name="title"]') as HTMLInputElement | null;
+      const descriptionInput = e.currentTarget.querySelector('input[name="description"]') as HTMLInputElement | null;
+      const priceInput = e.currentTarget.querySelector('input[name="price"]') as HTMLInputElement | null;
+
+      const titleValue = titleInput ? titleInput.value : '';
+      const descriptionValue = descriptionInput ? descriptionInput.value : '';
+      const priceValue = priceInput ? priceInput.value : '';
+
+      formDataToSend.append('product[title]', titleValue);
+      formDataToSend.append('product[description]', descriptionValue);
+      formDataToSend.append('product[price]', priceValue);
+
       if (files) {
         for (let i = 0; i < files.length; i++) {
           formDataToSend.append('product[images][]', files[i]);
@@ -27,7 +38,7 @@ const Form: React.FC = ({product}) => {
       const response = await fetch(`http://localhost:3000/api/v1/admin/products/${product ? product.id : ""}`, {
         method: product ? 'PATCH' : 'POST',
         headers: {
-          'Authorization': token,
+          'Authorization': cookies,
         },
         body: formDataToSend,
       });
@@ -42,18 +53,24 @@ const Form: React.FC = ({product}) => {
     }
   };
 
-  const handleImageChange = (e: ChangeEvent<HTMLInputElement>) => {
-    const files = e.target.files;
-    setSelectedImages(files);
+  const handleImageChange = (e: ChangeEvent<HTMLInputElement>): void => {
+    const files: FileList | null = e.target.files;
+    if (files) {
+      const filesArray: File[] = Array.from(files);
+      setSelectedImages(filesArray);
+    } else {
+      setSelectedImages(null);
+    }
   };
 
   const handleDeleteImage = (index: number) => {
-    const updatedImages = Array.from(selectedImages);
     if (selectedImages) {
-      updatedImages.splice(index, 1);
-      setSelectedImages(updatedImages);
-    }
-    const inputElement = document.getElementById('ProductImages') as HTMLInputElement;
+      const updatedImages = Array.from(selectedImages);
+      if (selectedImages) {
+        updatedImages.splice(index, 1);
+        setSelectedImages(updatedImages);
+      }
+      const inputElement = document.getElementById('ProductImages') as HTMLInputElement;
       if (inputElement) {
         const newFileList = new DataTransfer();
         for (const file of updatedImages) {
@@ -61,6 +78,7 @@ const Form: React.FC = ({product}) => {
         }
         inputElement.files = newFileList.files;
       }
+    }
   };
 
   return (
@@ -79,14 +97,14 @@ const Form: React.FC = ({product}) => {
       </div>
       <div className="mb-3">
         <label htmlFor="ProductImages" className="form-label">Product Images</label>
-        <input type="file" required className="form-control" name="images" id="ProductImages" multiple placeholder="Product Images" onChange={handleImageChange} />
+        <input type="file" className="form-control" name="images" id="ProductImages" multiple placeholder="Product Images" onChange={handleImageChange} />
       </div>
       <div className="d-flex">
         {selectedImages && selectedImages.length > 0 ? (
           Array.from(selectedImages).map((image, index) => (
-            <div key={index} className="mb-3 me-3 d-flex flex-column" id={index}>
+            <div key={index} className="mb-3 me-3 d-flex flex-column">
               <img className='mb-3' src={URL.createObjectURL(image)} alt={`Image ${index}`} style={{ maxWidth: '100px', maxHeight: '100px' }} />
-              <button className='btn btn-danger' onClick={(e) => handleDeleteImage(index, e)}>Delete</button>
+              <button className='btn btn-danger' onClick={() => handleDeleteImage(index)}>Delete</button>
             </div>
           ))
         ) : (
@@ -99,7 +117,7 @@ const Form: React.FC = ({product}) => {
       </div>
       <div className="mb-3">
         <label htmlFor="ProductActive" className="form-label me-3">Product active</label>
-        <input type="checkbox" defaultChecked={product ? product.active : true} className="" name="active" id="ProductActive" placeholder="Product active" />
+        <input type="checkbox" defaultChecked={product ? Boolean(product.active) : true} className="" name="active" id="ProductActive" placeholder="Product active" />
       </div>
       <button type="submit" className="btn btn-primary w-100 mb-3">{product ? "Update product" : "Create product"} </button>
     </form>

@@ -1,7 +1,7 @@
 'use server'
 import Link from "@/node_modules/next/link";
 
-const NavPanel: React.FC = () => {
+const NavPanel = () => {
   return (
     <div className="admin_panel mb-3">
       <ul>
