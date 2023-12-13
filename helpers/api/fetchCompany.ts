@@ -1,4 +1,6 @@
-const fetchCompany = async () => {
+import { CompanyAdmin } from "../interface/interfaces";
+
+const fetchCompany = async (): Promise<CompanyAdmin> => {
   try {
     const response = await fetch('http://localhost:3000/api/v1/companies');
     const data = await response.json();
@@ -7,6 +9,7 @@ const fetchCompany = async () => {
     console.error('Error fetching data:', error);
     throw error;
   }
+  
 };
 
 export { fetchCompany }

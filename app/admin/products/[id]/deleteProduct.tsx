@@ -1,16 +1,19 @@
 'use client'
+import { DeleteProducts } from '@/helpers/interface/interfaces';
 import { useRouter } from '@/node_modules/next/navigation';
 
-const DeleteProducts: React.FC<{ params: { id: number } }> = ({ productId }) => {
+const DeleteProducts: React.FC<DeleteProducts> = ({ productId, cookies }) => {
   const router = useRouter();
 
   const deleteProductHandler = async () => {
+    if (!cookies) {
+      return null
+    }
     try {
-      const token = 'Bearer eyJhbGciOiJIUzI1NiJ9.eyJ1c2VyX2lkIjoyfQ.B8Mj72lfdlp3hLsKSPwXM6sJtYFEWgDlHSmKJXccHpo';
       const response = await fetch(`http://127.0.0.1:3000/api/v1/admin/products/${productId}`, {
         method: 'DELETE',
         headers: {
-          'Authorization': token,
+          'Authorization': cookies,
           'Content-Type': 'application/json',
         },
       });

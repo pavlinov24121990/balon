@@ -1,30 +1,10 @@
 'use client'
 import { Carousel } from 'react-bootstrap';
-import { useEffect, useState } from 'react';
 import '../scss/MyCarousel.scss'
-import { fetchCompany } from '../helpers/api/fetchCompany.ts';
 import Link from "@/node_modules/next/link";
+import { MyCarouselProps } from '@/helpers/interface/interfaces';
 
-interface Company {
-  title: string;
-  description: string;
-  name: string;
-  phone: string;
-  image_urls: string[];
-  address: string;
-  email: string;
-  logo: string;
-}
-
-const defaultCompany = {title: "", description: "", name: "", phone: "", image_urls: [""], address: "", email: "", logo: ""}
-
-const MyCarousel: React.FC = () => {
-
-  const [company, setCompany] = useState<Company>(defaultCompany);
-
-  useEffect(() => {
-    fetchCompany().then(data => {setCompany(data)});
-  }, []);
+const MyCarousel: React.FC<MyCarouselProps> = ({ company }) => {
 
   return (
     <Carousel>

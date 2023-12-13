@@ -3,7 +3,7 @@ import * as React from 'react';
 import AdminLayout from '../AdminLayout';
 import Form from './Form';
 
-const Home: React.FC = async () => {
+const Home = async () => {
   return (
     <AdminLayout>
       <main className="company">

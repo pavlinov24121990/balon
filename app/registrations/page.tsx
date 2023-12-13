@@ -4,7 +4,7 @@ import { HeaderNavigation } from 'components/HeaderNavigation';
 import Form from './Form';
 import 'scss/registrations.scss';
 
-const registrations: React.FC = async () => {
+const registrations = async () => {
   return (
     <main className='registrations'>
       <HeaderNavigation />
