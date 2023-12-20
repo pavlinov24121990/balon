@@ -1,26 +1,26 @@
-'use client'
-import '../scss/HardReset.css';
-import 'bootstrap/dist/css/bootstrap.min.css';
+'use server'
 import { HeaderNavigation } from '../components/HeaderNavigation';
 import { MyCarousel } from '@/components/MyCarousel';
-import { fetchCompany } from '../helpers/api/fetchCompany';
-import { Company } from "helpers/interface/interfaces";
-import { useEffect, useState } from 'react';
+import { fetchCompany } from './api/route';
+import { CompanyAdmin } from '@/helpers/interface/interfaces';
+import { metadata } from 'app/layout';
 
-const Home = () => {
-  const defaultCompany = { title: "", id: null, formatted_phone: "", description: "", name: "", phone: "", image_urls: [""], address: "", email: "", logo_url: "" }
-  const [company, setCompany] = useState<Company>(defaultCompany);
 
-  useEffect(() => {
-    fetchCompany().then(data => { setCompany(data) });
-  }, []);
-  
+
+const Home = async () => {
+
+  const company: CompanyAdmin = await fetchCompany()
+
   return (
-    <main>
+    <div>
       <HeaderNavigation />
       <MyCarousel company={ company }/>
-    </main>
+    </div>
   );
 }
 
+
+  
 export default Home;
+
+ 

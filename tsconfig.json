@@ -22,6 +22,6 @@
       "@/*": ["./*"]
     }
   },
-  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts", "components/navpanel/Logo.tsx", "helpers/api/fetchCompany.еы", "api/products/[id].js"],
+  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts", "components/navpanel/Logo.tsx", "api/products/[id].js"],
   "exclude": ["node_modules"]
 }

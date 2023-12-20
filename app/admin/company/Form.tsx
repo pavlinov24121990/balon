@@ -3,11 +3,12 @@ import React, { useState, ChangeEvent, FormEvent, useEffect } from 'react';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { useRouter } from '@/node_modules/next/navigation';
 import { fetchCompany } from "helpers/api/fetchCompany";
-import { CompanyAdmin } from '@/helpers/interface/interfaces';
+import { CompanyAdmin, ProductListProps } from '@/helpers/interface/interfaces';
 
 const defaultCompany: CompanyAdmin = { title: "", description: "", name: "", phone: "", image_urls: [""], address: "", email: "", logo: null, formatted_phone: '', logo_url: '', id: null, images: [] }
 
-const Form: React.FC = () => {
+const Form: React.FC<ProductListProps> = ({ cookies }) => {
+  
   const router = useRouter();
   const [formData, setFormData] = useState<CompanyAdmin>(defaultCompany);
 
@@ -17,8 +18,6 @@ const Form: React.FC = () => {
     });
   }, []);
 
- 
-  
   const handleChange = (e: ChangeEvent<HTMLInputElement>): void => {
     const { name, value } = e.target;
     setFormData((prevData) => ({
@@ -29,14 +28,10 @@ const Form: React.FC = () => {
 
   const handleFilesChange = (e: ChangeEvent<HTMLInputElement>): void => {
     const { name, files } = e.target;
-    if (files) {
-      setFormData((prevData) => ({
-        ...prevData,
-        [name]: Array.from(files),
-      }));
-    } else {
-      console.error('No files selected.');
-    }
+    setFormData((prevData) => ({
+      ...prevData,
+      [name]: files ? Array.from(files) : [],
+    }));
   };
 
   const handleDeleteImage = (index: number, e: React.MouseEvent<HTMLButtonElement>): void => {
@@ -76,36 +71,38 @@ const Form: React.FC = () => {
     const { name, files } = e.target;
     setFormData((prevData) => ({
       ...prevData,
-      [name]: files?.[0] || null,
+      [name]: files && files.length > 0 ? files[0] : null,
     }));
   };
 
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-
+    if (!cookies) {
+      return null
+    }
     try {
-      const token = 'Bearer eyJhbGciOiJIUzI1NiJ9.eyJ1c2VyX2lkIjoyfQ.B8Mj72lfdlp3hLsKSPwXM6sJtYFEWgDlHSmKJXccHpo';
       const formDataToSend = new FormData();
-
       formDataToSend.append('company[title]', formData.title);
       formDataToSend.append('company[name]', formData.name);
       formDataToSend.append('company[description]', formData.description);
       formDataToSend.append('company[phone]', formData.phone);
       formDataToSend.append('company[address]', formData.address);
       formDataToSend.append('company[email]', formData.email);
-      formDataToSend.append('company[logo]', formData.logo || '');
-      formData.images.forEach((image) => {
-        formDataToSend.append('company[images][]', image);
-      });
-
+      if (formData.logo) {
+        formDataToSend.append('company[logo]', formData.logo);
+      }
+      if (Array.isArray(formData.images)) {
+        formData.images.forEach((image) => {
+          formDataToSend.append('company[images][]', image);
+        });
+      }
       const response = await fetch(`http://localhost:3000/api/v1/admin/companies/${formData.id}`, {
         method: 'PATCH',
         headers: {
-          'Authorization': token,
+          'Authorization': cookies,
         },
         body: formDataToSend,
       });
-
       if (response.ok) {
         router.push('/admin');
       } else {
@@ -136,7 +133,7 @@ const Form: React.FC = () => {
       </div>
       <div className="mb-3">
         <label htmlFor="CompanyImages" className="form-label">Company Images</label>
-        <input type="file" required className="form-control" name="images" id="CompanyImages" multiple placeholder="Company Images" onChange={handleFilesChange}/>
+        <input type="file" className="form-control" name="images" id="CompanyImages" multiple placeholder="Company Images" onChange={handleFilesChange}/>
       </div>
       <div className='d-flex'>
         {formData.images && formData.images.length > 0 ?
@@ -148,7 +145,7 @@ const Form: React.FC = () => {
           ))
           :
           formData.image_urls.map((image, index) => (
-            <div key={index} className="mb-3 me-3" id={index}>
+            <div key={index} className="mb-3 me-3">
               <img src={`http://localhost:3000${image}`} alt={`Image ${index}`} style={{ maxWidth: '100px', maxHeight: '100px' }} />
             </div>
           ))
@@ -164,7 +161,7 @@ const Form: React.FC = () => {
       </div>
       <div className="mb-3">
         <label htmlFor="CompanyLogo" className="form-label">Company Logo</label>
-        <input type="file" required className="form-control" name="logo" id="CompanyLogo" placeholder="Company Logo" onChange={handleFileChange} />
+        <input type="file" className="form-control" name="logo" id="CompanyLogo" placeholder="Company Logo" onChange={handleFileChange} />
       </div>
         {formData.logo ?
           <div className="mb-3 d-flex flex-column">

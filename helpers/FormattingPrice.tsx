@@ -6,7 +6,7 @@ const Price = ({ price }: { price: number }) => {
     maximumFractionDigits: 2,
   });
 
-  return <p className="price mb-3">{formattedPrice}</p>;
+  return <p className="price mb-5">{formattedPrice}</p>;
 };
 
 export default Price;

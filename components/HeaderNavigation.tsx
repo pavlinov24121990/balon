@@ -47,7 +47,7 @@ const HeaderNavigation: React.FC = () => {
     <div className='nav-panel'>
       <ul>
         <li>
-          <Link href="">Новинки</Link>
+          <Link href="/products">Products</Link>
         </li>
         <li>
           <Link href="">Одежда</Link>
